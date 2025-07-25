@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] GameManager gameManager;
     [SerializeField] float jumpForce;
+    [SerializeField] float deathForce;
     Rigidbody2D rb;
     Vector3 startPosition;
 
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour
 
     public void StartGame()
     {
+        rb.linearVelocity = Vector2.zero;
         transform.position = startPosition;
         rb.gravityScale = 1;
     }
@@ -39,20 +41,23 @@ public class PlayerController : MonoBehaviour
     void Dead()
     {
         Debug.Log("Dead");
-        rb.gravityScale = 0;
-        rb.linearVelocity = Vector2.zero; //Vector2.zero is the same as Vector2(0,0)
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(Vector2.up * deathForce);
         gameManager.GameOver();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Pipe"))
+        if (gameManager.HasGameStarted())
         {
-            Dead();
-        }
-        if (collision.CompareTag("Score"))
-        {
-            gameManager.PointScored();
+            if (collision.CompareTag("Pipe"))
+            {
+                Dead();
+            }
+            if (collision.CompareTag("Score"))
+            {
+                gameManager.PointScored();
+            }
         }
     }
 }

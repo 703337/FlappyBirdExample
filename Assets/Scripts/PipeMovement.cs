@@ -5,6 +5,7 @@ public class PipeMovement : MonoBehaviour
 
     [SerializeField] float speed;
     [SerializeField] float randomOffset;
+    GameManager gameManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -13,16 +14,20 @@ public class PipeMovement : MonoBehaviour
         newPos.y = Random.Range(-randomOffset, randomOffset);
         
         transform.position = newPos;
+        gameManager = FindFirstObjectByType<GameManager>();
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        transform.position += Vector3.left * speed * Time.deltaTime;
-        if (transform.position.x <= -10)
+        if (gameManager.HasGameStarted())
         {
-            Destroy(gameObject); //gameObject with a lowercase g is referring to itself
+            transform.position += Vector3.left * speed * Time.deltaTime;
+            if (transform.position.x <= -10)
+            {
+                Destroy(gameObject); //gameObject with a lowercase g is referring to itself
+            }
         }
     }
 }
